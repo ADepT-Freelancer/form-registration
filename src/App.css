@@ -89,6 +89,8 @@ body {
   max-width: 80%;
   margin: 0px auto;
 }
+
+.forgetPassword__wrapper,
 .registration__wrapper,
 .setting-page__wrapper,
 .article__result-users-search-antd {

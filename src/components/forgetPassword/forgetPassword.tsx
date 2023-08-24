@@ -37,7 +37,7 @@ export const ForgetPassword = () => {
   const [form] = Form.useForm();
 
   return (
-    <div className="authorization__wrapper">
+    <div className="forgetPassword__wrapper">
       <Form
         className="forgetPassword__form"
         form={form}
@@ -59,7 +59,7 @@ export const ForgetPassword = () => {
               message: "Вхід не є дійсним електронною поштою!",
             },
             {
-              required: false,
+              required: true,
               message: "Будь ласка, введіть свою електронну пошту!",
             },
           ]}
