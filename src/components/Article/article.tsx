@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
 import { ClockCircleOutlined } from "@ant-design/icons";
-import { Avatar, Button, List, Skeleton, Input } from "antd";
-import axios from "axios";
+import { Avatar, Input, List, Radio, Space } from "antd";
+import {} from "antd";
 import { Badge } from "antd/lib";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 export const Article = () => {
   const initialTimeSeconds = 3;
@@ -21,14 +22,15 @@ export const Article = () => {
           searchTemp={searchTemp}
           setSearchTemp={setSearchTemp}
         />
-        <SearchFormUsers
+        {/* <SearchFormUsers
           setSelectUsersChanged={setSelectUsersChanged}
           initialTimeSeconds={initialTimeSeconds}
           users={users}
           setUserDetails={setUserDetails}
           setSeconds={setSeconds}
-        />
-        <ResultUSersAnt
+        /> */}
+
+        <ResultUSersPaginAnt
           searchTemp={searchTemp}
           setSelectUsersChanged={setSelectUsersChanged}
           initialTimeSeconds={initialTimeSeconds}
@@ -36,6 +38,14 @@ export const Article = () => {
           setUserDetails={setUserDetails}
           setSeconds={setSeconds}
         />
+        {/* <ResultUSersAnt
+          searchTemp={searchTemp}
+          setSelectUsersChanged={setSelectUsersChanged}
+          initialTimeSeconds={initialTimeSeconds}
+          users={users}
+          setUserDetails={setUserDetails}
+          setSeconds={setSeconds}
+        /> */}
         <UserDetails
           selectUsersChanged={selectUsersChanged}
           initialTimeSeconds={initialTimeSeconds}
@@ -63,12 +73,13 @@ const SearchFormInput: React.FC<SearchFormInputType> = (props) => {
       )
       .then((res) => {
         props.setUsers(res.data.items);
+        console.log(res.data.items);
         setTotalCountUsersSearch(res.data.total_count);
         setIsLoading(false);
       });
   }, [props.searchTemp]);
   return (
-    <div className="search-form__form">
+    <div className="search-form__form ">
       <Badge
         className="search-form__badge"
         count={
@@ -99,43 +110,43 @@ const SearchFormInput: React.FC<SearchFormInputType> = (props) => {
     </div>
   );
 };
-const SearchFormUsers: React.FC<SearchFormUsersType> = (props) => {
-  const [selectedUser, setSelectedUser] = useState<SearchUserType | null>(null);
-  useEffect(() => {
-    if (selectedUser) {
-      document.title = selectedUser.login;
-      props.setSelectUsersChanged(selectedUser.login);
-    }
-  }, [selectedUser]);
+// const SearchFormUsers: React.FC<SearchFormUsersType> = (props) => {
+//   const [selectedUser, setSelectedUser] = useState<SearchUserType | null>(null);
+//   useEffect(() => {
+//     if (selectedUser) {
+//       document.title = selectedUser.login;
+//       props.setSelectUsersChanged(selectedUser.login);
+//     }
+//   }, [selectedUser]);
 
-  useEffect(() => {
-    if (!!selectedUser) {
-      axios
-        .get<UserType>(`https://api.github.com/users/${selectedUser.login}`)
-        .then((res) => {
-          // props.setSeconds(props.initialTimeSeconds);
-          props.setUserDetails(res.data);
-        });
-    }
-  }, [selectedUser]);
-  return (
-    <div className="search-form__users">
-      <ul className="users__list">
-        {props.users.map((u: SearchUserType) => (
-          <li
-            key={u.id}
-            className={selectedUser === u ? "search-form__selected-user" : ""}
-            onClick={() => {
-              setSelectedUser(u);
-            }}
-          >
-            {u.login}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+//   useEffect(() => {
+//     if (!!selectedUser) {
+//       axios
+//         .get<UserType>(`https://api.github.com/users/${selectedUser.login}`)
+//         .then((res) => {
+//           // props.setSeconds(props.initialTimeSeconds);
+//           props.setUserDetails(res.data);
+//         });
+//     }
+//   }, [selectedUser]);
+//   return (
+//     <div className="search-form__users">
+//       <ul className="users__list">
+//         {props.users.map((u: SearchUserType) => (
+//           <li
+//             key={u.id}
+//             className={selectedUser === u ? "search-form__selected-user" : ""}
+//             onClick={() => {
+//               setSelectedUser(u);
+//             }}
+//           >
+//             {u.login}
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// };
 const UserDetails: React.FC<UserDetailsType> = (props) => {
   const isTimerFinished = () => props.setUserDetails(null);
 
@@ -234,6 +245,8 @@ type TimerType = {
 type SearchUserType = {
   login: string;
   id: number;
+  avatar_url: string;
+  url: string;
 };
 type SearchResult = { items: SearchUserType[]; total_count: number };
 type UserType = {
@@ -242,109 +255,72 @@ type UserType = {
   avatar_url: string;
 };
 
-// interface DataType {
-//   gender?: string;
-//   name: {
-//     title?: string;
-//     first?: string;
-//     last?: string;
-//   };
-//   email?: string;
-//   picture: {
-//     large?: string;
-//     medium?: string;
-//     thumbnail?: string;
-//   };
-//   nat?: string;
-//   loading: boolean;
-// }
-
-export const ResultUSersAnt: React.FC<SearchFormUsersAntdType> = (props) => {
-  const count = 3;
-
-  const [initLoading, setInitLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<SearchUserType[]>([
-    { id: 1, login: "Artem" },
-    { id: 2, login: "Andriy" },
-  ]);
-  const [list, setList] = useState<SearchUserType[]>(props.users);
-
-  useEffect(() => {
-    setInitLoading(false);
-    setData(props.users);
-    setList(props.users);
-  
-  }, [props.users]);
-  console.log("data", data);
-    console.log("list", list);
-  const onLoadMore = () => {
-    setLoading(true);
-    setList(
-      data.concat(
-        [...new Array(count)].map(() => ({
-          login: "111",
-          id: 222,
-        }))
-      )
-    );
-
-    // const newData = data.concat(props.users);
-    // setData(newData);
-    // setList(newData);
-    setLoading(false);
-    // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
-    // In real scene, you can using public method of react-virtualized:
-    // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
-    window.dispatchEvent(new Event("resize"));
-  };
-
-  const loadMore =
-    !initLoading && !loading ? (
-      <div
-        style={{
-          textAlign: "center",
-          marginTop: 12,
-          height: 32,
-          lineHeight: "32px",
-        }}
-      >
-        <Button onClick={onLoadMore}>Відкрити ще</Button>
-      </div>
-    ) : null;
-
+const ResultUSersAnt: React.FC<SearchFormUsersAntdType> = (props) => {
+  const data = props.users;
   return (
-    <List
-      className="demo-loadmore-list"
-      loading={initLoading}
-      itemLayout="horizontal"
-      loadMore={loadMore}
-      dataSource={list}
-      renderItem={(item) => (
-        <List.Item
-          actions={[
-            // <a key={item.id}>edit</a>,
-            <a href="https://google.com" key={item.id}>
-              more
-            </a>,
-          ]}
-        >
-          <Skeleton avatar title={false} active>
+    <div className="article__result-users-search-antd">
+      <List
+        itemLayout="horizontal"
+        dataSource={data}
+        renderItem={(item, index) => (
+          <List.Item>
             <List.Item.Meta
               avatar={
                 <Avatar
                   src={
-                    "https://www.google.com/imgres?imgurl=https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F18%2F18601.png&tbnid=-w5je8h-FB5FFM&vet=12ahUKEwiBsO6rm_CAAxVCi_0HHbWIBqEQMygCegQIARBb..i&imgrefurl=https%3A%2F%2Fwww.flaticon.com%2Fru%2Ffree-icon%2Fblank-avatar_18601&docid=8fEtotGrDA8A9M&w=512&h=512&q=%D0%BF%D1%83%D1%81%D1%82%D0%BE%D0%B9%20%D1%8E%D0%B7%D0%B5%D1%80&ved=2ahUKEwiBsO6rm_CAAxVCi_0HHbWIBqEQMygCegQIARBb"
+                    item.avatar_url ||
+                    `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${item.id}`
                   }
                 />
               }
-              title={<a href="https://ant.design">{item.login}</a>}
-              description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+              title={<a href={item.url}>{item.login}</a>}
+              description={item.id}
             />
-            <div>content</div>
-          </Skeleton>
-        </List.Item>
-      )}
-    />
+          </List.Item>
+        )}
+      />
+    </div>
+  );
+};
+
+type PaginationPosition = "top" | "bottom" | "both";
+
+type PaginationAlign = "start" | "center" | "end";
+
+const ResultUSersPaginAnt: React.FC<SearchFormUsersAntdType> = (props) => {
+  const positionOptions = ["top", "bottom", "both"];
+
+  const alignOptions = ["start", "center", "end"];
+
+  const data = props.users;
+
+  const [position, setPosition] = useState<PaginationPosition>("bottom");
+  const [align, setAlign] = useState<PaginationAlign>("center");
+
+  return (
+    <div className="article__result-users-search-antd">
+      <List
+        pagination={{ position, align }}
+        dataSource={data}
+        
+        renderItem={(item, index) => (
+          <List.Item>
+            <List.Item.Meta
+              avatar={
+                <Avatar
+                size="large"
+                  src={
+                    item.avatar_url ||
+                    `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`
+                  }
+                />
+              }
+              title={<a href={item.url}>{item.login}</a>}
+              description={item.id}
+            />
+          </List.Item>
+        )}
+      />
+    </div>
   );
 };

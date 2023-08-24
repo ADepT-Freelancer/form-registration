@@ -6,19 +6,26 @@ import { ForgetPassword } from "./components/forgetPassword/forgetPassword";
 import { Registration } from "./components/registration/registration";
 import { HomePage } from "./components/homePage/home";
 import { Article } from "./components/Article/article";
+import { Header } from "./components/Header/header";
+import { PrivateRoute } from "./components/router/privatRouter";
 
 function App() {
   return (
     <div className="app__wrapper">
-      <Routes>
-        <Route path="/registration" element={<Registration />} />
-        <Route path="/auth" element={<Authorization />} />
-        <Route path="/forgetPassword" element={<ForgetPassword />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/article" element={<Article />} />
-        <Route path="/" element={<Navigate to="/auth" />} />
+      <Header />
+      <div className="app-wrapper-content-inside">
+        <Routes>
+          <Route element={<PrivateRoute />}>
+            <Route path="/home" element={<HomePage />} />
+          </Route>
 
-      </Routes>
+          <Route path="/registration" element={<Registration />} />
+          <Route path="/auth" element={<Authorization />} />
+          <Route path="/forgetPassword" element={<ForgetPassword />} />
+          <Route path="/article" element={<Article />} />
+          <Route path="/" element={<Navigate to="/auth" />} />
+        </Routes>
+      </div>
     </div>
   );
 }

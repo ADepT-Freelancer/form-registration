@@ -1,8 +1,14 @@
 import { Button, Checkbox, Form, FormInstance, Input } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { instance } from "../../Api/api";
+import { login } from "../../store/slice/auth/store-auth";
+import store from "../../store/store";
+import { useAppDispatch } from "../../utils/hook/customHooks";
 
 export const Authorization = () => {
+  console.log("Initial State", store.getState().auth);
+
   const navigate = useNavigate();
 
   const SubmitButton = ({ form }: { form: FormInstance }) => {
@@ -28,9 +34,45 @@ export const Authorization = () => {
       </Button>
     );
   };
+  const dispatch = useAppDispatch();
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
+  // const onFinish = async (e: { preventDefault: () => void }) => {
+  //   e.preventDefault();
+  //   const userData = {
+  //     email: e ,
+  //     password: password.value,
+  //     rememberMe: ,
+  //   };
+
+  //   const user = await
+  //   await dispatch(login(user.data));
+  //   navigate("/home");
+  //   if (user.data.resultCode !== 0) {
+  //     alert("Користувача не знайдено");
+  //   }
+  // };
+
+  // const onFinish = (values: any) => {
+  //   console.log("Success:", values);
+  // };
+
+  const handlerSubmit = async (values: authDataType) => {
+    const userData = {
+      email: values.username,
+      password: values.password,
+      rememberMe: values.remember,
+      captcha: false,
+    };
+
+    const user = await instance.post("auth/login", userData);
+    console.log("auth/login", user);
+
+    if (user.data.resultCode === 0) {
+      dispatch(login(user.data));
+      navigate("/article");
+    } else {
+      alert("Користувача не знайдено");
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -55,7 +97,7 @@ export const Authorization = () => {
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
-        onFinish={onFinish}
+        onFinish={handlerSubmit}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
@@ -67,10 +109,7 @@ export const Authorization = () => {
               required: true,
               message: "Будь-ласка введіть ім'я користувача!",
             },
-            {
-              max: 16,
-              message: "Ім'я має бути коротше за 16 символів",
-            },
+
             {
               warningOnly: true,
               message: "warningOnly",
@@ -130,12 +169,17 @@ export const Authorization = () => {
               style={{ color: "blue", cursor: "pointer" }}
               onClick={() => navigate("/registration")}
             >
-              Реєстрація
-              Articles
+              Реєстрація Articles
             </span>
           </div>
         </Form.Item>
       </Form>
     </div>
   );
+};
+
+type authDataType = {
+  password: string;
+  remember: boolean;
+  username: string;
 };

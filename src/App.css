@@ -44,9 +44,15 @@ input {
 html,
 body {
   height: 100%;
+  background-color: #007ba7;
 }
 
 /* ================================================================== */
+
+.header__menu {
+  background-color: #b3dcfd;
+  padding-bottom: 1px;
+}
 
 .registration__field-errors {
   padding: 0.5rem;
@@ -82,5 +88,9 @@ body {
   min-height: 350px;
   max-width: 80%;
   margin: 0px auto;
-  
+}
+.registration__wrapper,
+.setting-page__wrapper,
+.article__result-users-search-antd {
+  padding: 10%;
 }
