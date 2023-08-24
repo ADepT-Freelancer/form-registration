@@ -1,154 +1,141 @@
+import { Button, Checkbox, Form, FormInstance, Input } from "antd";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { instance } from "../../Api/api";
-import { login } from "../../store/slice/auth/store-auth";
-import { useAppDispatch, useInput } from "../../utils/hook/customHooks";
 
 export const Authorization = () => {
-  const email = useInput("", {
-    minLength: 3,
-    isEmail: true,
-    isEmpty: true,
-    isWithoutSpaces: true,
-    isMinL: false,
-    isMaxL: false,
-    isNumber: false,
-    isSymbol: false,
-  });
-  const password = useInput("", {
-    minLength: 5,
-    maxLength: 16,
-    isEmpty: true,
-    isWithoutSpaces: true,
-    isMinL: false,
-    isMaxL: false,
-    isNumber: false,
-    isSymbol: false,
-  });
-  const repeatPassword = useInput("", {
-    minLength: 5,
-    maxLength: 16,
-    isEmpty: true,
-    isWithoutSpaces: true,
-    isMinL: false,
-    isMaxL: false,
-    isNumber: false,
-    isSymbol: false,
-  });
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const rememberMe = true;
-  // const captcha = false;
+  const SubmitButton = ({ form }: { form: FormInstance }) => {
+    const [submittable, setSubmittable] = React.useState(false);
 
-  const handlerSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    const userData = {
-      email: email.value,
-      password: password.value,
-      rememberMe,
-      // captcha,
-    };
-    // try {
-    //   const user = await instance.post("auth/login", userData);
-    //   dispatch(login(user.data));
-    // } catch (e) {
-    //   return e;
-    // }
-    if (password.value === repeatPassword.value) {
-      const user = await instance.post("auth/login", userData);
-      await dispatch(login(user.data));
-      navigate("/home");
-      if (user.data.resultCode !== 0) {
-        alert("Користувача не знайдено");
-      }
-    } else {
-      alert("Невірний повторний пароль");
-    }
+    // Watch all values
+    const values = Form.useWatch([], form);
+
+    React.useEffect(() => {
+      form.validateFields({ validateOnly: true }).then(
+        () => {
+          setSubmittable(true);
+        },
+        () => {
+          setSubmittable(false);
+        }
+      );
+    }, [values]);
+
+    return (
+      <Button type="primary" htmlType="submit" disabled={!submittable}>
+        Submit
+      </Button>
+    );
   };
+
+  const onFinish = (values: any) => {
+    console.log("Success:", values);
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  type FieldType = {
+    username?: string;
+    password?: string;
+    remember?: string;
+  };
+
+  const [form] = Form.useForm();
 
   return (
     <div className="authorization__wrapper">
-      <div className="authorization__form">
-        <h1>Авторизація </h1>
-        <div>
-          {email.isDirty && email.isEmpty && (
-            <div style={{ color: "red" }}>Поле не може бути порожнім </div>
-          )}
-          {email.isDirty && email.minLengthError && (
-            <div style={{ color: "red" }}>
-              Поле не може бути меншим ніж 3 символи
-            </div>
-          )}
-          {email.isDirty && email.emailError && (
-            <div style={{ color: "red" }}>Неккоректний емейл</div>
-          )}
-          {email.isDirty && !email.isWithoutSpaces && (
-            <div style={{ color: "red" }}>Поле не має містити пробіли</div>
-          )}
-          <input
-            onChange={(e) => email.onChange(e)}
-            value={email.value}
-            onBlur={(e) => email.onBlur(e)}
-            type="text"
-            name="email"
-            placeholder="Enter your email..."
-          />
-        </div>
-        <div>
-          {password.isDirty && password.isEmpty && (
-            <div style={{ color: "red" }}>Поле не може бути порожнім </div>
-          )}
-          {/* {password.isDirty && password.minLengthError && (
-            <div style={{ color: "red" }}>
-              Поле не може бути меншим ніж 5 символи
-            </div>
-          )}
-          {password.isDirty && password.maxLengthError && (
-            <div style={{ color: "red" }}>
-              Поле не може бути довшим ніж 16 символів
-            </div>
-          )}
-          {password.isDirty && !password.isWithoutSpaces && (
-            <div style={{ color: "red" }}>Поле не має містити пробіли</div>
-          )} */}
-          <div>
-            <input
-              onChange={(e) => password.onChange(e)}
-              value={password.value}
-              onBlur={(e) => password.onBlur(e)}
-              type="password"
-              name="password"
-              placeholder="Enter your password..."
-            />
-          </div>
-          <div>
-            <input
-              onChange={(e) => repeatPassword.onChange(e)}
-              value={repeatPassword.value}
-              onBlur={(e) => repeatPassword.onBlur(e)}
-              type="password"
-              name="repeatPassword"
-              placeholder="Repeat your password..."
-            />
-          </div>
-        </div>
-        <button
-          onClick={handlerSubmit}
-          // disabled={!email.inputValid || !password.inputValid}
-          type="submit"
+      <Form
+        className="authorization__form"
+        form={form}
+        name="authForm"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        <Form.Item<FieldType>
+          label="Username"
+          name="username"
+          rules={[
+            {
+              required: true,
+              message: "Будь-ласка введіть ім'я користувача!",
+            },
+            {
+              max: 16,
+              message: "Ім'я має бути коротше за 16 символів",
+            },
+            {
+              warningOnly: true,
+              message: "warningOnly",
+            },
+            {
+              whitespace: true,
+              message: "Ім'я має бути без пробілів",
+            },
+
+            {
+              transform: (value) => {
+                const isWhiteSpace = /(?=.*[\s])/;
+                return isWhiteSpace.test(value) ? false : null;
+              },
+
+              message: ` Ім'я має бути без пробілів `,
+            },
+          ]}
         >
-          Authorization
-        </button>
-        <div>
-          <span>У Вас немає аккаунта?</span>{" "}
-          <span
-            style={{ color: "blue", cursor: "pointer" }}
-            onClick={() => navigate("/registration")}
-          >
-            Реєстрація
-          </span>
-        </div>
-      </div>
+          <Input />
+        </Form.Item>
+
+        <Form.Item<FieldType>
+          label="Password"
+          name="password"
+          rules={[
+            { required: true, message: "Будь-ласка введіть пароль!" },
+            {
+              min: 5,
+              message: "Будь-ласка введіть пароль довший ніж 5 символів",
+            },
+            {
+              whitespace: true,
+              message: "Пароль має бути без пробілів",
+            },
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item<FieldType>
+          name="remember"
+          valuePropName="checked"
+          wrapperCol={{ offset: 8, span: 16 }}
+        >
+          <Checkbox>Remember me</Checkbox>
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <SubmitButton form={form} />
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <div>
+            <span>У Вас немає аккаунта? </span>
+            <span
+              style={{ color: "blue", cursor: "pointer" }}
+              onClick={() => navigate("/registration")}
+            >
+              Реєстрація
+              Articles
+            </span>
+          </div>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

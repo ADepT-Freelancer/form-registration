@@ -1,209 +1,393 @@
+import React, { useState } from "react";
+import type { CascaderProps } from "antd";
+import {
+  AutoComplete,
+  Button,
+  Cascader,
+  Checkbox,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+} from "antd";
 import { useNavigate } from "react-router-dom";
-import { instance } from "../../Api/api";
-import { login } from "../../store/slice/auth/store-auth";
-import { useAppDispatch, useInput } from "../../utils/hook/customHooks";
 
-export const Registration = () => {
-  const name = useInput("", {
-    minLength: 3,
-    isEmpty: true,
-    isWithoutSpaces: true,
-  });
-  const surname = useInput("", {
-    minLength: 3,
-    isEmpty: true,
-    isWithoutSpaces: true,
-  });
-  const email = useInput("", {
-    minLength: 3,
-    isEmail: true,
-    isEmpty: true,
-    isWithoutSpaces: true,
-    isMinL: false,
-    isMaxL: false,
-    isNumber: false,
-    isSymbol: false,
-  });
-  const password = useInput("", {
-    minLength: 5,
-    maxLength: 16,
-    isEmpty: true,
-    isWithoutSpaces: true,
-    isMinL: false,
-    isMaxL: false,
-    isNumber: false,
-    isSymbol: false,
-  });
-  const repeatPassword = useInput("", {
-    minLength: 5,
-    maxLength: 16,
-    isEmpty: true,
-    isWithoutSpaces: true,
-    isMinL: false,
-    isMaxL: false,
-    isNumber: false,
-    isSymbol: false,
-  });
+const { Option } = Select;
 
-  const rememberMe = true;
-  // const captcha = false;
-  const dispatch = useAppDispatch();
+interface DataNodeType {
+  value: string;
+  label: string;
+  children?: DataNodeType[];
+}
+
+const residences: CascaderProps<DataNodeType>["options"] = [
+  {
+    value: "Україна",
+    label: "Україна",
+    children: [
+      {
+        value: "Київська область",
+        label: "Київська область",
+        children: [
+          {
+            value: "Київ",
+            label: "Київ",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    value: "Мексика",
+    label: "Мексика",
+    children: [
+      {
+        value: "Округ Дістрито-Федераль",
+        label: "Округ Дістрито-Федераль",
+        children: [
+          {
+            value: "Мехико",
+            label: "Мехико",
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
+
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+  },
+};
+
+export const Registration: React.FC = () => {
+  const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const handlerSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    const userData = {
-      firstName: name.value,
-      surname: surname.value,
-      email: email.value,
-      password: password.value,
-      rememberMe,
-      // captcha,
-    };
-    // try {
-    //   const user = await instance.post("auth/login", userData);
-    //   dispatch(login(user.data));
-    // } catch (e) {
-    //   return e;
-    // }
-    if (password.value === repeatPassword.value) {
-      try {
-        const newUser = await instance.post("auth/registration", userData);
-        await dispatch(login(newUser.data));
-        navigate("/home");
-      } catch (e) {
-        console.log(e);
-        return e;
-      }
+  const onFinish = (values: any) => {
+    console.log("Received values of form: ", values);
+  };
+
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 70 }}>
+        <Option value="38">+38</Option>
+        <Option value="39">+39</Option>
+        <Option value="52">+52</Option>
+      </Select>
+    </Form.Item>
+  );
+
+  const suffixSelector = (
+    <Form.Item name="suffix" noStyle>
+      <Select style={{ width: 70 }}>
+        <Option value="USD">$</Option>
+        <Option value="Грн">₴, грн</Option>
+      </Select>
+    </Form.Item>
+  );
+
+  const [autoCompleteResult, setAutoCompleteResult] = useState<string[]>([]);
+
+  const onWebsiteChange = (value: string) => {
+    if (!value) {
+      setAutoCompleteResult([]);
     } else {
-      alert("Невірний повторний пароль");
+      setAutoCompleteResult(
+        [".com", ".org", ".net"].map((domain) => `${value}${domain}`)
+      );
     }
   };
 
+  const websiteOptions = autoCompleteResult.map((website) => ({
+    label: website,
+    value: website,
+  }));
+
   return (
     <div className="registration__wrapper">
-      <div className="registration__form">
-        <h1>Реєстрація </h1>
-        <div>
-          <div>
-            <input
-              onChange={(e) => name.onChange(e)}
-              value={name.value}
-              onBlur={(e) => name.onBlur(e)}
-              type="text"
-              name="name"
-              placeholder="Enter your name..."
-            />
-          </div>
-          <div>
-            <input
-              onChange={(e) => surname.onChange(e)}
-              value={surname.value}
-              onBlur={(e) => surname.onBlur(e)}
-              type="text"
-              name="surname"
-              placeholder="Enter your surname..."
-            />
-          </div>
-          {email.isDirty && email.isEmpty && (
-            <div style={{ color: "red" }}>Поле Email не може бути порожнім </div>
-          )}
-          {email.isDirty && email.minLengthError && (
-            <div style={{ color: "red" }}>
-              Поле Email не може бути меншим ніж 3 символи
-            </div>
-          )}
-          {email.isDirty && email.emailError && (
-            <div style={{ color: "red" }}>Неккоректний емейл</div>
-          )}
-          {email.isDirty && !email.isWithoutSpaces && (
-            <div style={{ color: "red" }}>Поле Email не має містити пробіли</div>
-          )}
-          <div>
-            <input
-              onChange={(e) => email.onChange(e)}
-              value={email.value}
-              onBlur={(e) => email.onBlur(e)}
-              type="text"
-              name="email"
-              placeholder="Enter your email..."
-            />
-          </div>
-        </div>
-        <div>
-          {password.isDirty && password.isEmpty && (
-            <div style={{ color: "red" }}>Поле не може бути порожнім </div>
-          )}
-
-          <div>
-            <input
-              onChange={(e) => password.onChange(e)}
-              value={password.value}
-              onBlur={(e) => password.onBlur(e)}
-              type="password"
-              name="password"
-              placeholder="Enter your password..."
-            />
-          </div>
-          <div>
-            <input
-              onChange={(e) => repeatPassword.onChange(e)}
-              value={repeatPassword.value}
-              onBlur={(e) => repeatPassword.onBlur(e)}
-              type="password"
-              name="repeatPassword"
-              placeholder="Repeat your password..."
-            />
-          </div>
-          <br />
-          <br />
-          <div>
-            Вимоги до паролю:
-            <ul>
-              <li>
-                <span hidden={password.minLengthError}>✅</span> Не коротший 3
-                символи
-              </li>
-              <li>
-                <span hidden={password.maxLengthError}>✅</span> Не довше 16
-                символів
-              </li>
-              <li>
-                <span hidden={!password.isMaxL}>✅</span> Має містити великі
-                літери
-              </li>
-              <li>
-                <span hidden={!password.isNumber}>✅</span> Має містити цифри
-              </li>
-              <li>
-                <span hidden={!password.isWithoutSpaces}>✅</span> Не має
-                містити пробілів
-              </li>
-              <li>
-                <span hidden={!password.isSymbol}>✅</span> Має містити
-                спец.символи !, @, #, $, %, ^, &, *.
-              </li>
-            </ul>
-          </div>
-        </div>
-        <button
-          onClick={handlerSubmit}
-          disabled={!email.inputValid || !password.inputValid}
-          type="submit"
+      <Form
+        {...formItemLayout}
+        form={form}
+        name="register"
+        onFinish={onFinish}
+        initialValues={{
+          residence: ["Україна", "Київська область", "Київ"],
+          prefix: "+38",
+          suffix: "$",
+        }}
+        style={{ maxWidth: 600 }}
+        scrollToFirstError
+      >
+        <Form.Item
+          name="email"
+          label="Електронна пошта"
+          rules={[
+            {
+              type: "email",
+              message: "The input is not valid E-mail!",
+            },
+            {
+              required: false,
+              message: "Please input your E-mail!",
+            },
+          ]}
         >
-          Registration
-        </button>
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          label="Пароль"
+          rules={[
+            {
+              required: false,
+              message: "Заповніть будь-ласка пароль",
+            },
+            {
+              whitespace: true,
+              message: "Пароль має бути без пробілів",
+            },
+            {
+              transform: (value) => {
+                const isNumber = /(?=.*[0-9])/;
+                return isNumber.test(value) && null;
+              },
 
-        <div>
-          <span>Забули пароль?</span>{" "}
-          <span
-            style={{ color: "blue", cursor: "pointer" }}
-            onClick={() => navigate("/forgetPassword")}
+              message: ` Пароль має містити мінімум одну цифри `,
+            },
+            {
+              transform: (value) => {
+                const isSymbol = /(?=.*[!@#$%^&*])/;
+                return isSymbol.test(value) && null;
+              },
+
+              message: `Пароль має містити спец.символи !, @, #, $, %, ^, &, *. `,
+            },
+            {
+              transform: (value) => {
+                const isMaxL = /(?=.*[A-Z])/;
+                return isMaxL.test(value) && null;
+              },
+
+              message: `Пароль має містити мінімум одну велику літеру `,
+            },
+            {
+              transform: (value) => {
+                const isMinL = /(?=.*[a-z])/;
+                return isMinL.test(value) && null;
+              },
+
+              message: `Пароль має містити мінімум одну маленьку літеру літеру `,
+            },
+            {
+              min: 8,
+              message: `Пароль має містити мінімум 8 символів `,
+            },
+            {
+              max: 16,
+              message: `Пароль має містити максимум 16 символів `,
+            },
+          ]}
+          hasFeedback
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item
+          name="confirm"
+          label="Підтвердити пароль"
+          dependencies={["password"]}
+          hasFeedback
+          rules={[
+            {
+              required: false,
+              message: "Будь-ласка підтвердіть Ваш пароль",
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("password") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error("Введені паролі не співпадають!")
+                );
+              },
+            }),
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item
+          name="nickname"
+          label="Прізвисько"
+          tooltip="Як ви хочете, щоб інші вас називали?"
+          rules={[
+            {
+              required: false,
+              message: "Будь ласка, введіть своє прізвисько!",
+              whitespace: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="residence"
+          label="Звичне місце проживання"
+          rules={[
+            {
+              type: "array",
+              required: false,
+              message: "Виберіть своє місце проживання!",
+            },
+          ]}
+        >
+          <Cascader options={residences} />
+        </Form.Item>
+        <Form.Item
+          name="phone"
+          label="Номер телефону"
+          rules={[{ required: false, message: "Введіть свій номер телефону!" }]}
+        >
+          <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
+        </Form.Item>
+        <Form.Item
+          name="donation"
+          label="Пожертва"
+          rules={[
+            { required: false, message: "Будь ласка, введіть суму пожертви!" },
+          ]}
+        >
+          <InputNumber addonAfter={suffixSelector} style={{ width: "100%" }} />
+        </Form.Item>
+        <Form.Item
+          name="website"
+          label="Веб -сайт"
+          rules={[
+            { required: false, message: "Будь ласка, введіть веб -сайт!" },
+          ]}
+        >
+          <AutoComplete
+            options={websiteOptions}
+            onChange={onWebsiteChange}
+            placeholder="Введіть сайт"
           >
-            Відновити пароль
-          </span>
-        </div>
-      </div>
+            <Input />
+          </AutoComplete>
+        </Form.Item>
+        <Form.Item
+          name="intro"
+          label="Про себе"
+          rules={[
+            { required: false, message: "Будь ласка, введіть щось про себе" },
+          ]}
+        >
+          <Input.TextArea showCount maxLength={100} />
+        </Form.Item>
+        <Form.Item
+          name="gender"
+          label="Стать"
+          rules={[{ required: false, message: "Виберіть стать!" }]}
+        >
+          <Select placeholder="Виберіть свою стать">
+            <Option value="male">Чоловічий</Option>
+            <Option value="female">Жіночий</Option>
+            <Option value="other">Інший</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="select-multiple"
+          label="Мови якими ви володієте"
+          rules={[
+            {
+              required: false,
+              message: 'Будь ласка, виберіть мови якими ви володієте"!',
+              type: "array",
+            },
+          ]}
+        >
+          <Select mode="multiple" placeholder="Будь ласка, виберіть мови якими ви володієте">
+            <Option value="english">English</Option>
+            <Option value="franch">Franch</Option>
+            <Option value="ukraine">Ukraine</Option>
+            <Option value="germany">Germany</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="Капча" extra="Ми повинні переконатися, що ви людина.">
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item
+                name="captcha"
+                noStyle
+                rules={[
+                  {
+                    required: false,
+                    message: "Будь ласка, введіть Captcha, яку ви отримали!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Button>Отримати капчу</Button>
+            </Col>
+          </Row>
+        </Form.Item>
+        <Form.Item
+          name="agreement"
+          valuePropName="checked"
+          rules={[
+            {
+              validator: (_, value) =>
+                value
+                  ? Promise.resolve()
+                  : Promise.reject(new Error("Повинен прийняти угоду")),
+            },
+          ]}
+          {...tailFormItemLayout}
+        >
+          <Checkbox>
+            Я прочитав <a href="">угоду</a>
+          </Checkbox>
+        </Form.Item>
+        <Form.Item {...tailFormItemLayout}>
+          <Button type="primary" htmlType="submit">
+            Зареєструватися
+          </Button>
+        </Form.Item>
+        <Form.Item {...tailFormItemLayout}>
+          <div>
+            <span>Забули пароль? </span>
+            <span
+              style={{ color: "blue", cursor: "pointer" }}
+              onClick={() => navigate("/forgetPassword")}
+            >
+              Відновити пароль
+            </span>
+          </div>
+        </Form.Item>
+      </Form>
     </div>
   );
 };
