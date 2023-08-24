@@ -128,6 +128,7 @@ export const Registration: React.FC = () => {
   return (
     <div className="registration__wrapper">
       <Form
+        className="registration__form-item"
         {...formItemLayout}
         form={form}
         name="register"
@@ -146,11 +147,11 @@ export const Registration: React.FC = () => {
           rules={[
             {
               type: "email",
-              message: "The input is not valid E-mail!",
+              message: "Введіть дійсну електронною поштою!",
             },
             {
               required: false,
-              message: "Please input your E-mail!",
+              message: "Будь ласка, введіть свою електронну пошту!",
             },
           ]}
         >
@@ -326,7 +327,10 @@ export const Registration: React.FC = () => {
             },
           ]}
         >
-          <Select mode="multiple" placeholder="Будь ласка, виберіть мови якими ви володієте">
+          <Select
+            mode="multiple"
+            placeholder="Будь ласка, виберіть мови якими ви володієте"
+          >
             <Option value="english">English</Option>
             <Option value="franch">Franch</Option>
             <Option value="ukraine">Ukraine</Option>
@@ -350,7 +354,7 @@ export const Registration: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Button>Отримати капчу</Button>
+              <Button>Відправити капчу</Button>
             </Col>
           </Row>
         </Form.Item>

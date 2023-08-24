@@ -1,4 +1,5 @@
 import { Button, Checkbox, Form, FormInstance, Input } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { instance } from "../../Api/api";
@@ -6,7 +7,7 @@ import { login } from "../../store/slice/auth/store-auth";
 import store from "../../store/store";
 import { useAppDispatch } from "../../utils/hook/customHooks";
 
-export const Authorization = () => {
+export const _Authorization = () => {
   console.log("Initial State", store.getState().auth);
 
   const navigate = useNavigate();
@@ -35,22 +36,6 @@ export const Authorization = () => {
     );
   };
   const dispatch = useAppDispatch();
-
-  // const onFinish = async (e: { preventDefault: () => void }) => {
-  //   e.preventDefault();
-  //   const userData = {
-  //     email: e ,
-  //     password: password.value,
-  //     rememberMe: ,
-  //   };
-
-  //   const user = await
-  //   await dispatch(login(user.data));
-  //   navigate("/home");
-  //   if (user.data.resultCode !== 0) {
-  //     alert("Користувача не знайдено");
-  //   }
-  // };
 
   // const onFinish = (values: any) => {
   //   console.log("Success:", values);
@@ -169,7 +154,7 @@ export const Authorization = () => {
               style={{ color: "blue", cursor: "pointer" }}
               onClick={() => navigate("/registration")}
             >
-              Реєстрація Articles
+              Реєстрація
             </span>
           </div>
         </Form.Item>
@@ -182,4 +167,96 @@ type authDataType = {
   password: string;
   remember: boolean;
   username: string;
+};
+
+export const Authorization: React.FC = () => {
+  // const onFinish = (values: any) => {
+  //   console.log("Received values of form: ", values);
+  // };
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const handlerSubmit = async (values: authDataType) => {
+    const userData = {
+      email: values.username,
+      password: values.password,
+      rememberMe: values.remember,
+      captcha: false,
+    };
+
+    const user = await instance.post("auth/login", userData);
+    console.log("auth/login", user);
+
+    if (user.data.resultCode === 0) {
+      dispatch(login(user.data));
+      navigate("/article");
+    } else {
+      console.log("Користувача не знайдено");
+    }
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  return (
+    <div className="authorization__wrapper">
+      <Form
+        name="normal_login"
+        className="login-form"
+        initialValues={{ remember: true }}
+        onFinish={handlerSubmit}
+        onFinishFailed={onFinishFailed}
+      >
+        <Form.Item
+          name="username"
+          rules={[
+            {
+              required: true,
+              message: "Будь ласка, введіть своє ім’я користувача!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined className="site-form-item-icon" />}
+            placeholder="Username"
+          />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: "Введіть свій пароль!" }]}
+        >
+          <Input
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            type="password"
+            placeholder="Password"
+          />
+        </Form.Item>
+        <Form.Item>
+          <Form.Item name="remember" valuePropName="checked" noStyle>
+            <Checkbox>Запам'ятати мене</Checkbox>
+          </Form.Item>
+
+          <a
+            onClick={() => navigate("/forgetPassword")}
+            className="login-form-forgot"
+          >
+            Забули пароль
+          </a>
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="login-form-button"
+          >
+            Увійти
+          </Button>{" "}
+          aбо{" "}
+          <a onClick={() => navigate("/registration")}>зареєструйтесь зараз!</a>
+        </Form.Item>
+      </Form>
+    </div>
+  );
 };
