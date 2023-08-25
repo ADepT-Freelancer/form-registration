@@ -168,8 +168,6 @@ type authDataType = {
 };
 
 export const Authorization: React.FC = () => {
-  const [isFormError, setFormError] = useState(false);
-  const [textWarning, setTextWarning] = useState("Будь-ласка переконайтесь що всі поля заповненні правильно!");
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -195,15 +193,13 @@ export const Authorization: React.FC = () => {
       success();
       setTimeout(navTimeOut, 2000);
     } else {
-      setTextWarning(user.data.messages)
-      warning();
+      warning(user.data.messages);
 
     }
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
-    setFormError(!errorInfo.outOfDate);
     error()
   };
 
@@ -221,10 +217,10 @@ export const Authorization: React.FC = () => {
     });
   };
 
-  const warning = () => {
+  const warning = (text: string) => {
     messageApi.open({
       type: "warning",
-      content: textWarning,
+      content: text,
     });
   };
 
@@ -330,11 +326,11 @@ export const Authorization: React.FC = () => {
           </a>
         </Form.Item>
         <Form.Item>
-          {isFormError && (
+          {/* {isFormError && (
             <div className="authorization-form__errors">
               Будь-ласка переконайтесь що всі поля заповненні правильно
             </div>
-          )}
+          )} */}
           <Button
             type="primary"
             htmlType="submit"
