@@ -44,14 +44,13 @@ input {
 html,
 body {
   height: 100%;
-  background-color: #B2C9CE   ;
+  background-color: #b2c9ce;
 }
 
 /* ================================================================== */
 
 .registration__form-item {
   color: #000000;
-  border: 2px solid #000;
 }
 .header__menu {
   background-color: #e2f2dc;
@@ -80,6 +79,10 @@ body {
 .authorization__form {
 }
 
+.authorization-form__errors {
+  color: #c93535;
+  font-size: 12px;
+}
 .registration__wrapper {
   padding: 8vh 5vw;
 }

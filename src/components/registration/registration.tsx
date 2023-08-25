@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import type { CascaderProps } from "antd";
 import {
+  CascaderProps,
   AutoComplete,
   Button,
   Cascader,
@@ -11,6 +11,8 @@ import {
   InputNumber,
   Row,
   Select,
+  message,
+  Space,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 
@@ -84,9 +86,38 @@ const tailFormItemLayout = {
 export const Registration: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [isFormError, setFormError] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "Реєстрація успішна, форма відправлена!",
+    });
+  };
+
+  const error = () => {
+    messageApi.open({
+      type: "error",
+      content: "Щось пішло не так!",
+    });
+  };
+
+  const warning = () => {
+    messageApi.open({
+      type: "warning",
+      content: "Будь-ласка переконайтесь що всі поля заповненні правильно",
+    });
+  };
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
+    success();
+  };
+  const onFinishFailed = (values: any) => {
+    console.log("onFinishFailed: ", values);
+    setFormError(!values.outOfDate);
+    warning();
   };
 
   const prefixSelector = (
@@ -127,12 +158,14 @@ export const Registration: React.FC = () => {
 
   return (
     <div className="registration__wrapper">
+      {contextHolder}
       <Form
         className="registration__form-item"
         {...formItemLayout}
         form={form}
         name="register"
         onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
         initialValues={{
           residence: ["Україна", "Київська область", "Київ"],
           prefix: "+38",
@@ -147,10 +180,10 @@ export const Registration: React.FC = () => {
           rules={[
             {
               type: "email",
-              message: "Введіть дійсну електронною поштою!",
+              message: "Введіть дійсну електронну пошту!",
             },
             {
-              required: false,
+              required: true,
               message: "Будь ласка, введіть свою електронну пошту!",
             },
           ]}
@@ -162,13 +195,27 @@ export const Registration: React.FC = () => {
           label="Пароль"
           rules={[
             {
-              required: false,
+              required: true,
               message: "Заповніть будь-ласка пароль",
             },
             {
-              whitespace: true,
-              message: "Пароль має бути без пробілів",
+              transform: (value) => {
+                const isLat = /[^0-9a-zA-Z!@#$%^&*]/;
+
+                return isLat.test(value) ? false : null;
+              },
+
+              message: `Пароль має містити літери лише  латинського алфавіту `,
             },
+            {
+              transform: (value) => {
+                const isWhiteSpace = /(?=.*[\s])/;
+                return isWhiteSpace.test(value) ? false : null;
+              },
+
+              message: ` Пароль має бути без пробілів `,
+            },
+
             {
               transform: (value) => {
                 const isNumber = /(?=.*[0-9])/;
@@ -201,6 +248,7 @@ export const Registration: React.FC = () => {
 
               message: `Пароль має містити мінімум одну маленьку літеру літеру `,
             },
+
             {
               min: 8,
               message: `Пароль має містити мінімум 8 символів `,
@@ -221,7 +269,7 @@ export const Registration: React.FC = () => {
           hasFeedback
           rules={[
             {
-              required: false,
+              required: true,
               message: "Будь-ласка підтвердіть Ваш пароль",
             },
             ({ getFieldValue }) => ({
@@ -240,13 +288,24 @@ export const Registration: React.FC = () => {
         </Form.Item>
         <Form.Item
           name="nickname"
-          label="Прізвисько"
+          label="Псевдонім"
           tooltip="Як ви хочете, щоб інші вас називали?"
           rules={[
             {
-              required: false,
-              message: "Будь ласка, введіть своє прізвисько!",
+              required: true,
+              message: "Будь ласка, введіть свой псевдонім!",
+            },
+            {
               whitespace: true,
+              message: "Псевдонім має бути без пробілів",
+            },
+            {
+              transform: (value) => {
+                const isWhiteSpace = /(?=.*[\s])/;
+                return isWhiteSpace.test(value) ? false : null;
+              },
+
+              message: `Псевдонім має бути без пробілів `,
             },
           ]}
         >
@@ -268,7 +327,28 @@ export const Registration: React.FC = () => {
         <Form.Item
           name="phone"
           label="Номер телефону"
-          rules={[{ required: false, message: "Введіть свій номер телефону!" }]}
+          rules={[
+            { required: true, message: "Введіть свій номер телефону!" },
+            {
+              transform: (value) => {
+                const isNum = /[^0-9]/;
+
+                return isNum.test(value) ? false : null;
+              },
+
+              message: `Номер телефону може містити лише цифри!`,
+            },
+            {
+              max: 10,
+
+              message: `Номер телефону має бути не довший за 10 цифр`,
+            },
+            {
+              min: 10,
+
+              message: `Номер телефону має бути не коротший за 10 цифр`,
+            },
+          ]}
         >
           <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
         </Form.Item>
@@ -283,9 +363,13 @@ export const Registration: React.FC = () => {
         </Form.Item>
         <Form.Item
           name="website"
-          label="Веб -сайт"
+          label="Веб-сайт"
           rules={[
-            { required: false, message: "Будь ласка, введіть веб -сайт!" },
+            { required: false, message: "Будь ласка, введіть веб-сайт!" },
+            {
+              type: "url",
+              message: "Будь ласка, введіть корректне посилання на веб-сайт!",
+            },
           ]}
         >
           <AutoComplete
@@ -321,7 +405,7 @@ export const Registration: React.FC = () => {
           label="Мови якими ви володієте"
           rules={[
             {
-              required: false,
+              required: true,
               message: 'Будь ласка, виберіть мови якими ви володієте"!',
               type: "array",
             },
@@ -376,6 +460,11 @@ export const Registration: React.FC = () => {
           </Checkbox>
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
+          {isFormError && (
+            <div className="authorization-form__errors">
+              Будь-ласка переконайтесь що всі поля заповненні правильно
+            </div>
+          )}
           <Button type="primary" htmlType="submit">
             Зареєструватися
           </Button>
