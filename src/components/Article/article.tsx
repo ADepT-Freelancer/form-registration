@@ -110,43 +110,43 @@ const SearchFormInput: React.FC<SearchFormInputType> = (props) => {
     </div>
   );
 };
-// const SearchFormUsers: React.FC<SearchFormUsersType> = (props) => {
-//   const [selectedUser, setSelectedUser] = useState<SearchUserType | null>(null);
-//   useEffect(() => {
-//     if (selectedUser) {
-//       document.title = selectedUser.login;
-//       props.setSelectUsersChanged(selectedUser.login);
-//     }
-//   }, [selectedUser]);
+const SearchFormUsers: React.FC<SearchFormUsersType> = (props) => {
+  const [selectedUser, setSelectedUser] = useState<SearchUserType | null>(null);
+  useEffect(() => {
+    if (selectedUser) {
+      document.title = selectedUser.login;
+      props.setSelectUsersChanged(selectedUser.login);
+    }
+  }, [selectedUser]);
 
-//   useEffect(() => {
-//     if (!!selectedUser) {
-//       axios
-//         .get<UserType>(`https://api.github.com/users/${selectedUser.login}`)
-//         .then((res) => {
-//           // props.setSeconds(props.initialTimeSeconds);
-//           props.setUserDetails(res.data);
-//         });
-//     }
-//   }, [selectedUser]);
-//   return (
-//     <div className="search-form__users">
-//       <ul className="users__list">
-//         {props.users.map((u: SearchUserType) => (
-//           <li
-//             key={u.id}
-//             className={selectedUser === u ? "search-form__selected-user" : ""}
-//             onClick={() => {
-//               setSelectedUser(u);
-//             }}
-//           >
-//             {u.login}
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
+  useEffect(() => {
+    if (!!selectedUser) {
+      axios
+        .get<UserType>(`https://api.github.com/users/${selectedUser.login}`)
+        .then((res) => {
+          // props.setSeconds(props.initialTimeSeconds);
+          props.setUserDetails(res.data);
+        });
+    }
+  }, [selectedUser]);
+  return (
+    <div className="search-form__users">
+      <ul className="users__list">
+        {props.users.map((u: SearchUserType) => (
+          <li
+            key={u.id}
+            className={selectedUser === u ? "search-form__selected-user" : ""}
+            onClick={() => {
+              setSelectedUser(u);
+            }}
+          >
+            {u.login}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 const UserDetails: React.FC<UserDetailsType> = (props) => {
   const isTimerFinished = () => props.setUserDetails(null);
 
@@ -255,34 +255,6 @@ type UserType = {
   avatar_url: string;
 };
 
-const ResultUSersAnt: React.FC<SearchFormUsersAntdType> = (props) => {
-  const data = props.users;
-  return (
-    <div className="article__result-users-search-antd">
-      <List
-        itemLayout="horizontal"
-        dataSource={data}
-        renderItem={(item, index) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={
-                <Avatar
-                  src={
-                    item.avatar_url ||
-                    `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${item.id}`
-                  }
-                />
-              }
-              title={<a href={item.url}>{item.login}</a>}
-              description={item.id}
-            />
-          </List.Item>
-        )}
-      />
-    </div>
-  );
-};
-
 type PaginationPosition = "top" | "bottom" | "both";
 
 type PaginationAlign = "start" | "center" | "end";
@@ -297,25 +269,57 @@ const ResultUSersPaginAnt: React.FC<SearchFormUsersAntdType> = (props) => {
   const [position, setPosition] = useState<PaginationPosition>("bottom");
   const [align, setAlign] = useState<PaginationAlign>("center");
 
+  const [selectedUser, setSelectedUser] = useState<SearchUserType | null>(null);
+  useEffect(() => {
+    if (selectedUser) {
+      document.title = selectedUser.login;
+      props.setSelectUsersChanged(selectedUser.login);
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    if (!!selectedUser) {
+      axios
+        .get<UserType>(`https://api.github.com/users/${selectedUser.login}`)
+        .then((res) => {
+          // props.setSeconds(props.initialTimeSeconds);
+          props.setUserDetails(res.data);
+        });
+    }
+  }, [selectedUser]);
+
   return (
     <div className="article__result-users-search-antd">
       <List
         pagination={{ position, align }}
         dataSource={data}
-        
         renderItem={(item, index) => (
-          <List.Item>
+          <List.Item
+            className={
+              selectedUser?.id === item.id ? "search-form__selected-user" : ""
+            }
+          >
             <List.Item.Meta
               avatar={
                 <Avatar
-                size="large"
+                  size="large"
                   src={
                     item.avatar_url ||
                     `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`
                   }
                 />
               }
-              title={<a href={item.url}>{item.login}</a>}
+              title={
+                <a
+                  // href={item.url}
+                  onClick={() => {
+                    setSelectedUser(selectedUser);
+                    console.log(selectedUser)
+                  }}
+                >
+                  {item.login}
+                </a>
+              }
               description={item.id}
             />
           </List.Item>
