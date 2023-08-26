@@ -1,10 +1,22 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, message } from "antd";
+import { Button, Checkbox, Col, Form, Input, Row, message } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { instance } from "../../Api/api";
 import { login } from "../../store/slice/auth/store-auth";
 import { useAppDispatch } from "../../utils/hook/customHooks";
+
+type GetCaptchaUrlResponseType = {
+  url: string;
+};
+
+export const securityAPI = {
+  getCaptchaUrl() {
+    return instance
+      .get<GetCaptchaUrlResponseType>(`security/get-captcha-url`)
+      .then((res) => res.data);
+  },
+};
 
 // export const _Authorization = () => {
 //   console.log("Initial State", store.getState().auth);
@@ -165,12 +177,21 @@ type authDataType = {
   password: string;
   remember: boolean;
   email: string;
+  captcha?: string | null;
 };
 
 export const Authorization: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [captchaUrl, setCaptchaUrl] = useState("");
+  const getCaptchaUrl = async () => {
+    let res = await securityAPI.getCaptchaUrl();
+    const captchaUrl = res.url;
+
+    setCaptchaUrl(captchaUrl);
+  };
 
   // const onFinish = (values: any) => {
   //   console.log("Received values of form: ", values);
@@ -181,10 +202,10 @@ export const Authorization: React.FC = () => {
       email: values.email,
       password: values.password,
       rememberMe: values.remember,
-      captcha: false,
+      captcha: values.captcha,
     };
     let navTimeOut = () => navigate("/article");
-
+    console.log(userData);
     const user = await instance.post("auth/login", userData);
     console.log("auth/login", user);
 
@@ -192,15 +213,16 @@ export const Authorization: React.FC = () => {
       dispatch(login(user.data));
       success();
       setTimeout(navTimeOut, 2000);
+    } else if (user.data.resultCode === 10) {
+      getCaptchaUrl();
     } else {
       warning(user.data.messages);
-
     }
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-    error()
+    console.log("onFinishFailed:", errorInfo);
+    error();
   };
 
   const success = () => {
@@ -223,7 +245,6 @@ export const Authorization: React.FC = () => {
       content: text,
     });
   };
-
   return (
     <div className="authorization__wrapper">
       {contextHolder}
@@ -237,6 +258,7 @@ export const Authorization: React.FC = () => {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item
+          hasFeedback
           name="email"
           rules={[
             {
@@ -255,59 +277,60 @@ export const Authorization: React.FC = () => {
           />
         </Form.Item>
         <Form.Item
+          hasFeedback
           name="password"
-          rules={[
-            {
-              required: true,
-              message: "Заповніть будь-ласка пароль",
-            },
-            {
-              whitespace: true,
-              message: "Пароль має бути без пробілів",
-            },
-            {
-              transform: (value) => {
-                const isNumber = /(?=.*[0-9])/;
-                return isNumber.test(value) && null;
-              },
+          // rules={[
+          //   {
+          //     required: true,
+          //     message: "Заповніть будь-ласка пароль",
+          //   },
+          //   {
+          //     whitespace: true,
+          //     message: "Пароль має бути без пробілів",
+          //   },
+          //   {
+          //     transform: (value) => {
+          //       const isNumber = /(?=.*[0-9])/;
+          //       return isNumber.test(value) && null;
+          //     },
 
-              message: ` Пароль має містити мінімум одну цифри `,
-            },
-            {
-              transform: (value) => {
-                const isSymbol = /(?=.*[!@#$%^&*])/;
-                return isSymbol.test(value) && null;
-              },
+          //     message: ` Пароль має містити мінімум одну цифри `,
+          //   },
+          //   {
+          //     transform: (value) => {
+          //       const isSymbol = /(?=.*[!@#$%^&*])/;
+          //       return isSymbol.test(value) && null;
+          //     },
 
-              message: `Пароль має містити спец.символи !, @, #, $, %, ^, &, *. `,
-            },
-            {
-              transform: (value) => {
-                const isMaxL = /(?=.*[A-Z])/;
-                return isMaxL.test(value) && null;
-              },
+          //     message: `Пароль має містити спец.символи !, @, #, $, %, ^, &, *. `,
+          //   },
+          //   {
+          //     transform: (value) => {
+          //       const isMaxL = /(?=.*[A-Z])/;
+          //       return isMaxL.test(value) && null;
+          //     },
 
-              message: `Пароль має містити мінімум одну велику літеру `,
-            },
-            {
-              transform: (value) => {
-                const isMinL = /(?=.*[a-z])/;
-                return isMinL.test(value) && null;
-              },
+          //     message: `Пароль має містити мінімум одну велику літеру `,
+          //   },
+          //   {
+          //     transform: (value) => {
+          //       const isMinL = /(?=.*[a-z])/;
+          //       return isMinL.test(value) && null;
+          //     },
 
-              message: `Пароль має містити мінімум одну маленьку літеру літеру `,
-            },
-            {
-              min: 8,
-              message: `Пароль має містити мінімум 8 символів `,
-            },
-            {
-              max: 16,
-              message: `Пароль має містити максимум 16 символів `,
-            },
-          ]}
+          //     message: `Пароль має містити мінімум одну маленьку літеру літеру `,
+          //   },
+          //   {
+          //     min: 8,
+          //     message: `Пароль має містити мінімум 8 символів `,
+          //   },
+          //   {
+          //     max: 16,
+          //     message: `Пароль має містити максимум 16 символів `,
+          //   },
+          // ]}
         >
-          <Input
+          <Input.Password
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
             placeholder="Password"
@@ -318,28 +341,77 @@ export const Authorization: React.FC = () => {
             <Checkbox>Запам'ятати мене</Checkbox>
           </Form.Item>
 
-          <a
-            onClick={() => navigate("/forgetPassword")}
-            className="login-form-forgot"
-          >
-            Забули пароль
-          </a>
+          <div>
+            <a
+              onClick={() => navigate("/forgetPassword")}
+              className="login-form-forgot"
+            >
+              Забули пароль?
+            </a>
+          </div>
         </Form.Item>
+        {captchaUrl && (
+          <Form.Item
+            label="Капча"
+            extra="Ми повинні переконатися, що ви людина."
+          >
+            <div>
+              <img src={captchaUrl} alt="captcha" />
+            </div>
+
+            <Row gutter={8}>
+              <Col span={12}>
+                <Form.Item
+                  name="captcha"
+                  noStyle
+                  rules={[
+                    {
+                      required: false,
+                      message: "Будь ласка, введіть Captcha, яку ви отримали!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="login-form-button"
+                >
+                  Відправити капчу
+                  <br />і авторизуватися
+                </Button>
+              </Col>
+            </Row>
+          </Form.Item>
+        )}
+
         <Form.Item>
           {/* {isFormError && (
             <div className="authorization-form__errors">
               Будь-ласка переконайтесь що всі поля заповненні правильно
             </div>
           )} */}
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
+          {!captchaUrl && (
+            <>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="login-form-button"
+              >
+                Увійти
+              </Button>
+              {" aбо "}
+            </>
+          )}
+          <a
+            className={captchaUrl ? "auth-form__button" : ""}
+            onClick={() => navigate("/registration")}
           >
-            Увійти
-          </Button>{" "}
-          aбо{" "}
-          <a onClick={() => navigate("/registration")}>зареєструйтесь зараз!</a>
+            Зареєструватись
+          </a>
         </Form.Item>
       </Form>
     </div>

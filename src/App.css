@@ -72,11 +72,31 @@ body {
 .registration__list-password-false {
   list-style-type: none;
 }
+.ant-form-item-explain-error {
+  color: #c93535 !important;
+}
+.auth-form__button {
+  padding: 0.5rem;
+  background-color: #f1f1f1;
+  border: 2px solid #1677ff;
+  border-radius: 0.4rem;
+  font-weight: 500;
+}
+.login-form-button {
+  height: 100%;
+}
 
 .authorization__wrapper {
-  padding: 30vh 10vw;
+  /* padding: 30vh 10vw; */
 }
-.authorization__form {
+.ant-form-horizontal {
+  max-width: 20rem;
+  margin: 0px auto;
+}
+.forgetPassword__form-input {
+  min-width: 15rem;
+}
+.forgetPassword__form {
 }
 
 .authorization-form__errors {

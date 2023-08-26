@@ -99,25 +99,32 @@ export const Registration: React.FC = () => {
   const error = () => {
     messageApi.open({
       type: "error",
-      content: "Щось пішло не так!",
+      content: "Будь-ласка переконайтесь що всі поля заповненні правильно!",
     });
   };
 
-  const warning = () => {
+  const respons = "Текст помилки з серверу!"
+
+
+  const warning = (text: string) => {
     messageApi.open({
       type: "warning",
-      content: "Будь-ласка переконайтесь що всі поля заповненні правильно",
+      content: text,
     });
   };
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
-    success();
+    if (true) {
+      console.log("Received values of form: ", values);
+      success();
+    } else {
+      warning(respons);
+    }
   };
   const onFinishFailed = (values: any) => {
     console.log("onFinishFailed: ", values);
     setFormError(!values.outOfDate);
-    warning();
+    error();
   };
 
   const prefixSelector = (

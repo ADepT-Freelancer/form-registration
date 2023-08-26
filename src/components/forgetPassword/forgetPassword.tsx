@@ -20,7 +20,8 @@ export const ForgetPassword = () => {
     }, [values]);
 
     return (
-      <Button type="primary" htmlType="submit" disabled={!submittable}>
+      <Button
+      type="primary" htmlType="submit" disabled={!submittable}>
         Відправити пароль
       </Button>
     );
@@ -42,9 +43,9 @@ export const ForgetPassword = () => {
         className="forgetPassword__form"
         form={form}
         name="authForm"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
+        // labelCol={{ span: 8 }}
+        // wrapperCol={{ span: 16 }}
+        // style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -52,7 +53,7 @@ export const ForgetPassword = () => {
       >
         <Form.Item
           name="email"
-          label="Ваша електронна пошта для відновлення паролю"
+          // label="Ваша електронна пошта для відновлення паролю"
           rules={[
             {
               type: "email",
@@ -60,11 +61,17 @@ export const ForgetPassword = () => {
             },
             {
               required: true,
-              message: "Будь ласка, введіть свою електронну пошту!",
+              message: "Будь-ласка, введіть свою електронну пошту!",
             },
           ]}
         >
-          <Input />
+          <div>
+          Ваша електронна пошта для відновлення паролю:
+          <br />
+            <Input
+            
+            />
+          </div>
         </Form.Item>
         <Form.Item>
           <SubmitButton form={form} />
