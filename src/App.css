@@ -86,9 +86,6 @@ body {
   height: 100%;
 }
 
-.authorization__wrapper {
-  /* padding: 30vh 10vw; */
-}
 .ant-form-horizontal {
   max-width: 20rem;
   margin: 0px auto;
@@ -116,10 +113,13 @@ body {
   max-width: 80%;
   margin: 0px auto;
 }
-
+.authorization__wrapper,
 .forgetPassword__wrapper,
 .registration__wrapper,
 .setting-page__wrapper,
 .article__result-users-search-antd {
   padding: 10%;
+}
+
+[class*="__wrapper"] {
 }

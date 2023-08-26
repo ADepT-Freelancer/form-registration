@@ -11,7 +11,7 @@ import { PrivateRoute } from "./components/router/privatRouter";
 
 function App() {
   return (
-    <div className="app__wrapper">
+    <div className="app-wrapper">
       <Header />
       <div className="app-wrapper-content-inside">
         <Routes>
