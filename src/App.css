@@ -116,10 +116,32 @@ body {
 .authorization__wrapper,
 .forgetPassword__wrapper,
 .registration__wrapper,
-.setting-page__wrapper,
-.article__result-users-search-antd {
+.setting-page__wrapper {
   padding: 10%;
+}
+.article__result-users-search-antd{
+  padding: 5%;
+
+}
+
+.article__result-users-search-antd {
+  position: relative;
 }
 
 [class*="__wrapper"] {
+}
+
+.search-form__list-user {
+  cursor: pointer !important;
+}
+.search-form__selected-user {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: #f1f1f1;
+  padding: 3%;
+  margin: 10% 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
