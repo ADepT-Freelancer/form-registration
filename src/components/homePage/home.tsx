@@ -1,14 +1,11 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import { instance } from "../../Api/api";
+import { authAPI } from "../../Api/auth-api";
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // sessionStorage.removeItem("name");
-    // sessionStorage.removeItem("token");
-    instance.delete(`auth/login`);
+    authAPI.logout();
     navigate("/auth");
   };
 

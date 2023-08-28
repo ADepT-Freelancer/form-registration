@@ -15,14 +15,11 @@ import {
   Space,
 } from "antd";
 import { useNavigate } from "react-router-dom";
+import { DataNodeType } from "../types/types";
 
 const { Option } = Select;
 
-interface DataNodeType {
-  value: string;
-  label: string;
-  children?: DataNodeType[];
-}
+
 
 const residences: CascaderProps<DataNodeType>["options"] = [
   {

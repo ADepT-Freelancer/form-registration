@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   AppstoreOutlined,
   MailOutlined,
-  FileSearchOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
@@ -39,7 +39,7 @@ const items: MenuProps["items"] = [
   {
     label: "Search page",
     key: "article",
-    icon: <FileSearchOutlined />,
+    icon: <SettingOutlined />,
   },
   {
     label: "Домашня сторінка",
