@@ -1,9 +1,8 @@
-import React, { useState } from "react";
 import {
-  CascaderProps,
   AutoComplete,
   Button,
   Cascader,
+  CascaderProps,
   Checkbox,
   Col,
   Form,
@@ -11,9 +10,9 @@ import {
   InputNumber,
   Row,
   Select,
-  message,
-  Space,
+  message
 } from "antd";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataNodeType } from "../types/types";
 
@@ -460,7 +459,7 @@ export const Registration: React.FC = () => {
           {...tailFormItemLayout}
         >
           <Checkbox>
-            Я прочитав <a href="">угоду</a>
+            Я прочитав <a href="www.google.com">угоду</a>
           </Checkbox>
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
