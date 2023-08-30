@@ -1,9 +1,10 @@
 import React from "react";
 import { SearchFormInputType, SearchResult } from "../types/types";
-import { Badge } from 'antd/lib';
-import { ClockCircleOutlined } from '@ant-design/icons';
-import axios from 'axios';
-import { Input } from 'antd';
+import { Badge } from "antd/lib";
+import { ClockCircleOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { Input } from "antd";
+import { searchAPI } from "../../Api/search-api";
 
 export const SearchFormInput: React.FC<SearchFormInputType> = (props) => {
   const [tempSearch, setTempSearch] = React.useState("fuchko");
@@ -13,15 +14,11 @@ export const SearchFormInput: React.FC<SearchFormInputType> = (props) => {
 
   React.useEffect(() => {
     setIsLoading(true);
-    axios
-      .get<SearchResult>(
-        `https://api.github.com/search/users?q=${props.searchTemp}`
-      )
-      .then((res) => {
-        props.setUsers(res.data.items);
-        setTotalCountUsersSearch(res.data.total_count);
-        setIsLoading(false);
-      });
+    searchAPI.search(props.searchTemp).then((data) => {
+      props.setUsers(data.items);
+      setTotalCountUsersSearch(data.total_count);
+      setIsLoading(false);
+    });
   }, [props.searchTemp]);
   return (
     <div className="search-form__form ">

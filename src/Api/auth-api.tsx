@@ -11,4 +11,5 @@ export const authAPI = {
       .get<GetCaptchaUrlResponseType>(`security/get-captcha-url`)
       .then((res) => res.data);
   },
+  
 };
