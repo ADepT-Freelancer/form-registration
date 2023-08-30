@@ -4,6 +4,8 @@ import { SearchFormInput } from './SearchFormInput';
 import { ResultUSersPaginAnt } from './ResultUSersPaginAnt';
 
 export const Article = () => {
+  document.title = "Search page"
+
   const initialTimeSeconds = 10;
   const [users, setUsers] = useState<SearchUserType[]>([]);
   const [userDetails, setUserDetails] = useState<null | UserType>(null);

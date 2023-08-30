@@ -2,6 +2,8 @@ import { Button, Form, FormInstance, Input } from "antd";
 import React from "react";
 
 export const ForgetPassword = () => {
+  document.title = "Forget Password"
+
   const SubmitButton = ({ form }: { form: FormInstance }) => {
     const [submittable, setSubmittable] = React.useState(false);
 

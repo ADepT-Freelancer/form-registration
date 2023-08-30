@@ -1,20 +1,19 @@
-import React from 'react';
-import { useOutsideClick } from '../../utils/hook/useOutsideClick';
-import { TimerType, UserDetailsType } from '../types/types';
-
-
+import React from "react";
+import { useOutsideClick } from "../../utils/hook/useOutsideClick";
+import { TimerType, UserDetailsType } from "../types/types";
 
 export const UserDetails: React.FC<UserDetailsType> = (props) => {
-  const isTimerFinished = () => props.setUserDetails(null);
+  const isTimerFinished = () => (
+    (document.title = "Search page"), props.setUserDetails(null)
+  );
+
   const elementRef = React.useRef(null);
-  
 
   useOutsideClick(elementRef, isTimerFinished, !!props.userDetails);
 
   return (
     <div
       ref={elementRef}
-      // className={"search-form__selected-user"}
       className={props.userDetails ? "search-form__selected-user" : " "}
     >
       {props.userDetails && (

@@ -93,8 +93,6 @@ body {
 .forgetPassword__form-input {
   min-width: 15rem;
 }
-.forgetPassword__form {
-}
 
 .authorization-form__errors {
   color: #c93535;
@@ -108,29 +106,19 @@ body {
   z-index: 50;
 }
 
-.demo-loadmore-list {
-  min-height: 351px;
-  max-width: 80%;
-  margin: 0px auto;
-}
 .authorization__wrapper,
 .forgetPassword__wrapper,
 .registration__wrapper,
 .setting-page__wrapper {
   padding: 10%;
 }
-.article__result-users-search-antd{
+.article__result-users-search-antd {
   padding: 5%;
-
 }
 
 .article__result-users-search-antd {
   position: relative;
   max-width: 20rem;
-  
-}
-
-[class*="__wrapper"] {
 }
 
 .search-form__list-user {

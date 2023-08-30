@@ -80,6 +80,8 @@ const tailFormItemLayout = {
 };
 
 export const Registration: React.FC = () => {
+  document.title = "Registration"
+
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [isFormError, setFormError] = useState(false);

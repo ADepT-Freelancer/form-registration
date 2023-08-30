@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { authAPI } from "../../Api/auth-api";
 
 export const HomePage = () => {
+  document.title = "Home page"
+
   const navigate = useNavigate();
 
   const handleLogout = () => {

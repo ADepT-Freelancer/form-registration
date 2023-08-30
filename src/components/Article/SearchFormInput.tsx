@@ -1,10 +1,9 @@
-import React from "react";
-import { SearchFormInputType, SearchResult } from "../types/types";
-import { Badge } from "antd/lib";
 import { ClockCircleOutlined } from "@ant-design/icons";
-import axios from "axios";
 import { Input } from "antd";
+import { Badge } from "antd/lib";
+import React from "react";
 import { searchAPI } from "../../Api/search-api";
+import { SearchFormInputType } from "../types/types";
 
 export const SearchFormInput: React.FC<SearchFormInputType> = (props) => {
   const [tempSearch, setTempSearch] = React.useState("fuchko");
@@ -36,7 +35,7 @@ export const SearchFormInput: React.FC<SearchFormInputType> = (props) => {
           title="search-form__input-title"
           className="search-form__input"
           type="text"
-          placeholder="текст пошуку введення"
+          placeholder="Введіть текст пошуку "
           size="middle"
           loading={isLoading}
           allowClear

@@ -9,6 +9,7 @@ import { authDataType } from "../types/types";
 import { authAPI } from "./../../Api/auth-api";
 
 export const Authorization: React.FC = () => {
+  document.title = "Authorization"
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
