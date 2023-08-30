@@ -1,3 +1,5 @@
+/* App ========================================================================= */
+
 .App {
   text-align: center;
 }
@@ -46,15 +48,24 @@ body {
   height: 100%;
   background-color: #b2c9ce;
 }
-
-/* ================================================================== */
-
-.registration__form-item {
-  color: #000000;
+.authorization__wrapper,
+.forgetPassword__wrapper,
+.registration__wrapper,
+.setting-page__wrapper {
+  padding: 10%;
 }
+
+/* Header ================================================================== */
+
 .header__menu {
   background-color: #e2f2dc;
   padding-bottom: 1px;
+}
+
+/* registration ========================================================================= */
+
+.registration__form-item {
+  color: #000000;
 }
 
 .registration__field-errors {
@@ -72,9 +83,12 @@ body {
 .registration__list-password-false {
   list-style-type: none;
 }
-.ant-form-item-explain-error {
-  color: #c93535 !important;
+.registration__wrapper {
+  padding: 8vh 5vw;
 }
+
+/* authorization ========================================================================= */
+
 .auth-form__button {
   padding: 0.5rem;
   background-color: #f1f1f1;
@@ -82,43 +96,31 @@ body {
   border-radius: 0.4rem;
   font-weight: 500;
 }
+.authorization-form__errors {
+  color: #c93535;
+  font-size: 12px;
+}
 .login-form-button {
   height: 100%;
 }
+/* forgetPassword ========================================================================= */
+.forgetPassword__form-input {
+  min-width: 15rem;
+}
+/* ant-form ========================================================================= */
 
 .ant-form-horizontal {
   max-width: 20rem;
   margin: 0px auto;
 }
-.forgetPassword__form-input {
-  min-width: 15rem;
+
+.ant-form-item-explain-error {
+  color: #c93535 !important;
 }
 
-.authorization-form__errors {
-  color: #c93535;
-  font-size: 12px;
-}
-.registration__wrapper {
-  padding: 8vh 5vw;
-}
-
+/* search-form ========================================================================= */
 .search-form__badge {
   z-index: 50;
-}
-
-.authorization__wrapper,
-.forgetPassword__wrapper,
-.registration__wrapper,
-.setting-page__wrapper {
-  padding: 10%;
-}
-.article__result-users-search-antd {
-  padding: 5%;
-}
-
-.article__result-users-search-antd {
-  position: relative;
-  max-width: 20rem;
 }
 
 .search-form__list-user {
@@ -126,8 +128,8 @@ body {
 }
 .search-form__selected-user {
   position: absolute;
-  /* width: 100%; */
-  /* height: 100%; */
+  width: 20rem;
+  height: 25rem;
   top: 0;
   left: 0;
   z-index: 100;
@@ -137,3 +139,28 @@ body {
   border-radius: 0.5rem;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
+
+/* article ========================================================================= */
+
+.article__result-users-search-antd {
+  padding: 5%;
+}
+
+.article__result-users-search-antd {
+  position: relative;
+  max-width: 20rem;
+}
+
+.details__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+
+
+  
+}
+.details__avatar-box-ibg {
+  padding: 5%;
+}
+
+

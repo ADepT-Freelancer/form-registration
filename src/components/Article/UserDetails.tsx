@@ -4,7 +4,9 @@ import { TimerType, UserDetailsType } from "../types/types";
 
 export const UserDetails: React.FC<UserDetailsType> = (props) => {
   const isTimerFinished = () => (
-    (document.title = "Search page"), props.setUserDetails(null)
+    (document.title = "Search page"),
+    props.setUserDetails(null),
+    props.setSeconds(props.initialTimeSeconds)
   );
 
   const elementRef = React.useRef(null);
