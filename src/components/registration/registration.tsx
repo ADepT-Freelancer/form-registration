@@ -10,15 +10,13 @@ import {
   InputNumber,
   Row,
   Select,
-  message
+  message,
 } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataNodeType } from "../types/types";
 
 const { Option } = Select;
-
-
 
 const residences: CascaderProps<DataNodeType>["options"] = [
   {
@@ -80,7 +78,9 @@ const tailFormItemLayout = {
 };
 
 export const Registration: React.FC = () => {
-  document.title = "Registration"
+  useEffect(() => {
+    document.title = "Registration";
+  }, []);
 
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -101,8 +101,7 @@ export const Registration: React.FC = () => {
     });
   };
 
-  const respons = "Текст помилки з серверу!"
-
+  const respons = "Текст помилки з серверу!";
 
   const warning = (text: string) => {
     messageApi.open({

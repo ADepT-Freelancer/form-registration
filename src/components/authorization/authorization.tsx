@@ -1,6 +1,6 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Col, Form, Input, Row, message } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { instance } from "../../Api/api";
 import { login } from "../../store/slice/auth/store-auth";
@@ -9,7 +9,9 @@ import { authDataType } from "../types/types";
 import { authAPI } from "./../../Api/auth-api";
 
 export const Authorization: React.FC = () => {
-  document.title = "Authorization"
+  useEffect(() => {
+    document.title = "Authorization";
+  }, []);
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

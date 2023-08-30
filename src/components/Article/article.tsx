@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SearchUserType, UserType } from "../types/types";
-import { SearchFormInput } from './SearchFormInput';
-import { ResultUSersPaginAnt } from './ResultUSersPaginAnt';
+import { SearchFormInput } from "./SearchFormInput";
+import { ResultUSersPaginAnt } from "./ResultUSersPaginAnt";
 
 export const Article = () => {
-  document.title = "Search page"
-
+  useEffect(() => {
+    document.title = "Search page";
+  }, []);
   const initialTimeSeconds = 10;
   const [users, setUsers] = useState<SearchUserType[]>([]);
   const [userDetails, setUserDetails] = useState<null | UserType>(null);
@@ -41,7 +42,3 @@ export const Article = () => {
     </div>
   );
 };
-
-
-
-
