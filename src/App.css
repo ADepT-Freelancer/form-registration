@@ -155,12 +155,24 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 0.5rem;
-
-
-  
 }
 .details__avatar-box-ibg {
   padding: 5%;
 }
 
+/* ================================================================ */
+
+.block-for-mouse {
+  margin: 0px auto;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+}
+
+.test__wrapper {
+  padding: 1rem;
+}
 

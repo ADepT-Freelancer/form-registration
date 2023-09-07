@@ -8,6 +8,7 @@ import { HomePage } from "./components/homePage/home";
 import { Article } from "./components/Article/article";
 import { Header } from "./components/Header/header";
 import { PrivateRoute } from "./components/router/privatRouter";
+import { TestPage } from "./components/test/test";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
 
           <Route path="/registration" element={<Registration />} />
           <Route path="/auth" element={<Authorization />} />
+          <Route path="/test" element={<TestPage />} />
           <Route path="/forgetPassword" element={<ForgetPassword />} />
           <Route path="/article" element={<Article />} />
           <Route path="/" element={<Navigate to="/auth" />} />
