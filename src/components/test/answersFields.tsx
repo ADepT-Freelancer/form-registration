@@ -33,8 +33,6 @@ export const AnswersFields = () => {
     setButtonsField(fnButtonsField(dataButtons));
   }, [dataButtons]);
 
-  console.log(dataButtons);
-
   const clickButtonsField = (id: number) => {
     const addItem = buttonsField.filter((item) =>
       item.id === id && !displayField.includes(item)
@@ -83,7 +81,6 @@ export const AnswersFields = () => {
       </Button>
     );
   });
-
   //================================================
   //================================================
 
@@ -118,27 +115,22 @@ export const AnswersFields = () => {
   return (
     <div className="test__answersFields">
       {contextHolder}
-      <Form 
+      <Form
         name="test__answersFields"
         style={{ display: "flex" }}
         scrollToFirstError
         onFinish={addSentence}
       >
-        <Space.Compact block >
-            <Input
-              allowClear
-              placeholder="Введіть ваш запис"
-            />
-          <Button
-            style={{ borderTopLeftRadius: "0", borderBottomLeftRadius: "0" }}
-            type="primary"
-            htmlType="submit"
-          >
-            <PlusCircleOutlined />
-          </Button>
-        </Space.Compact>
+        <Form.Item name="input">
+          <Space.Compact block>
+            <Input allowClear placeholder="Введіть ваш запис" />
+            <Button type="primary" htmlType="submit">
+              <PlusCircleOutlined />
+            </Button>
+          </Space.Compact>
+        </Form.Item>
       </Form>
-      <Space direction="vertical"     >
+      <Space direction="vertical">
         <Space
           wrap
           align="center"
